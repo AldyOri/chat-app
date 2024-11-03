@@ -1,14 +1,17 @@
 package websocket
 
 import (
+	"encoding/json"
+	"log"
 	"sync"
 
 	"github.com/gorilla/websocket"
 )
 
 type Message struct {
-	Content  []byte
-	SenderID uint
+	Content        []byte
+	SenderID       uint
+	SenderUsername string
 }
 
 type Hub struct {
@@ -20,10 +23,11 @@ type Hub struct {
 }
 
 type Client struct {
-	ID   uint
-	Room uint
-	Conn *websocket.Conn
-	Send chan []byte
+	ID       uint
+	Username string
+	Room     uint
+	Conn     *websocket.Conn
+	Send     chan []byte
 }
 
 func NewHub() *Hub {
@@ -57,8 +61,22 @@ func (h *Hub) Run() {
 				if client.ID == message.SenderID {
 					continue
 				}
+
+				msgJSON, err := json.Marshal(struct {
+					Content  string `json:"content"`
+					Username string `json:"username"`
+				}{
+					Content:  string(message.Content),
+					Username: message.SenderUsername,
+				})
+
+				if err != nil {
+					log.Printf("error serializing message: %v", err)
+					continue
+				}
+
 				select {
-				case client.Send <- message.Content:
+				case client.Send <- msgJSON:
 				default:
 					close(client.Send)
 					delete(h.Clients, client)

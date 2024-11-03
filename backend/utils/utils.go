@@ -12,3 +12,11 @@ func GetUserID(c echo.Context) uint {
 
 	return uint(userID)
 }
+
+func GetUsername(c echo.Context) string {
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(jwt.MapClaims)
+	username := claims["username"].(string)
+
+	return username
+}

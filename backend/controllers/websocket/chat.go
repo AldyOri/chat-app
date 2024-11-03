@@ -24,6 +24,7 @@ func Init() {
 
 func ConnectToRoom(c echo.Context) error {
 	userID := utils.GetUserID(c)
+	username := utils.GetUsername(c)
 
 	roomId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -36,10 +37,11 @@ func ConnectToRoom(c echo.Context) error {
 	}
 
 	client := &Client{
-		ID:   userID,
-		Room: uint(roomId),
-		Conn: conn,
-		Send: make(chan []byte),
+		ID:       userID,
+		Username: username,
+		Room:     uint(roomId),
+		Conn:     conn,
+		Send:     make(chan []byte),
 	}
 
 	hub.Register <- client
@@ -64,10 +66,16 @@ func handleMessages(client *Client) {
 			}
 			break
 		}
-		hub.Broadcast <- Message{Content: msg, SenderID: client.ID}
+
+		message := Message{
+			SenderID:       client.ID,
+			SenderUsername: client.Username,
+			Content:        msg,
+		}
+
+		hub.Broadcast <- message
 	}
 }
-
 
 func WriteMessages(client *Client) {
 	defer client.Conn.Close()
