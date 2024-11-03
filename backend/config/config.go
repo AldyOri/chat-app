@@ -22,5 +22,5 @@ func Connect() {
 }
 
 func Migrate() {
-	DB.AutoMigrate(&models.User{}, &models.Message{}, &models.Room{})
+	DB.AutoMigrate(&models.User{}, &models.Room{})
 }
