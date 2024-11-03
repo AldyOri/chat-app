@@ -63,11 +63,11 @@ func (h *Hub) Run() {
 				}
 
 				msgJSON, err := json.Marshal(struct {
-					Content  string `json:"content"`
 					Username string `json:"username"`
+					Content  string `json:"content"`
 				}{
-					Content:  string(message.Content),
 					Username: message.SenderUsername,
+					Content:  string(message.Content),
 				})
 
 				if err != nil {
