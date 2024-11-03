@@ -12,6 +12,7 @@ type Message struct {
 	Content        []byte
 	SenderID       uint
 	SenderUsername string
+	RoomID         uint
 }
 
 type Hub struct {
@@ -25,7 +26,7 @@ type Hub struct {
 type Client struct {
 	ID       uint
 	Username string
-	Room     uint
+	RoomID   uint
 	Conn     *websocket.Conn
 	Send     chan []byte
 }
@@ -59,6 +60,9 @@ func (h *Hub) Run() {
 			h.mutex.Lock()
 			for client := range h.Clients {
 				if client.ID == message.SenderID {
+					continue
+				}
+				if client.RoomID != message.RoomID {
 					continue
 				}
 

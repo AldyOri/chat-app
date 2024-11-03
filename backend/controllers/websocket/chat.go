@@ -31,6 +31,14 @@ func ConnectToRoom(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid room id")
 	}
 
+	exists, err := utils.IsRoomExists(uint(roomId))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "error checking room existence")
+	}
+	if !exists {
+		return echo.NewHTTPError(http.StatusNotFound, "room not found")
+	}
+
 	conn, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
 	if err != nil {
 		return err
@@ -39,7 +47,7 @@ func ConnectToRoom(c echo.Context) error {
 	client := &Client{
 		ID:       userID,
 		Username: username,
-		Room:     uint(roomId),
+		RoomID:   uint(roomId),
 		Conn:     conn,
 		Send:     make(chan []byte),
 	}
@@ -71,6 +79,7 @@ func handleMessages(client *Client) {
 			SenderID:       client.ID,
 			SenderUsername: client.Username,
 			Content:        msg,
+			RoomID:         client.RoomID,
 		}
 
 		hub.Broadcast <- message
