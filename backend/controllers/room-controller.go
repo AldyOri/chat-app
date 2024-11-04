@@ -154,6 +154,55 @@ func JoinRoom(c echo.Context) error {
 	})
 }
 
+func LeaveRoom(c echo.Context) error {
+    userID := utils.GetUserID(c)
+    roomIdStr := c.Param("id")
+    roomId, err := strconv.ParseUint(roomIdStr, 10, 32)
+    if err != nil {
+        return c.JSON(http.StatusBadRequest, map[string]string{
+            "message": "invalid room id",
+        })
+    }
+
+    isInRoom, err := IsUserInRoom(userID, uint(roomId))
+    if err != nil {
+        return c.JSON(http.StatusInternalServerError, map[string]string{
+            "message": "failed to check room membership",
+        })
+    }
+
+    if !isInRoom {
+        return c.JSON(http.StatusConflict, map[string]string{
+            "message": "user not in room",
+        })
+    }
+
+    var room models.Room
+    if err := config.DB.First(&room, roomId).Error; err != nil {
+        return c.JSON(http.StatusNotFound, map[string]string{
+            "message": "room not found",
+        })
+    }
+
+    var user models.User
+    if err := config.DB.First(&user, userID).Error; err != nil {
+        return c.JSON(http.StatusNotFound, map[string]string{
+            "message": "user not found",
+        })
+    }
+
+    if err := config.DB.Model(&room).Association("Users").Delete(&user); err != nil {
+        return c.JSON(http.StatusInternalServerError, map[string]string{
+            "message": "failed to leave room",
+        })
+    }
+
+    return c.JSON(http.StatusOK, dto.Response{
+        Message: "left room successfully",
+        Data:    room,
+    })
+}
+
 func IsUserInRoom(userID uint, roomID uint) (bool, error) {
 	var count int64
 	err := config.DB.Table("user_rooms").Where("user_id = ? AND room_id = ?", userID, roomID).Count(&count).Error

@@ -21,7 +21,8 @@ func SetupRoutes(e *echo.Echo) {
 	roomsGroup.GET("", controllers.GetRooms)
 	roomsGroup.GET("/:id", controllers.GetRoomById)
 	roomsGroup.POST("/:id/join", controllers.JoinRoom)
-
+	roomsGroup.POST("/:id/leave", controllers.LeaveRoom)
+	
 	// roomsGroup.GET("/:id/messages", controllers.GetMessages)
 	// roomsGroup.POST("/:id/messages", controllers.SendMessages)
 

@@ -21,6 +21,11 @@ func main() {
 		Format: "${time_rfc3339} | ${method} | ${uri} | ${status} | ${latency_human} \n",
 	}))
 
+	e.Use(echoMiddleware.CORSWithConfig(echoMiddleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
+	}))
+
 	config.Connect()
 	config.Migrate()
 
