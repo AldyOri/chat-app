@@ -21,6 +21,7 @@ type Message = {
 
 export default function Chat() {
   const { user } = useAuth();
+  const isMounted = useRef(false);
   console.log(user);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const [message, setMessage] = useState("");
@@ -48,6 +49,13 @@ export default function Chat() {
       time: "10:03 AM",
     },
   ]);
+
+  useEffect(()=>{
+    if (isMounted.current) {
+      return;
+    }
+    isMounted.current = true;
+  },[])
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -86,7 +94,7 @@ export default function Chat() {
     >
       <AppSidebar />
       <SidebarInset className="flex h-screen flex-col">
-        <header className="bg-background flex shrink-0 items-center gap-2 border-b p-4">
+        <header className="flex shrink-0 items-center gap-2 border-b bg-background p-4">
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
           <p>ini nama room</p>
@@ -121,7 +129,7 @@ export default function Chat() {
           <footer className="z-10 w-full shrink-0">
             <form
               onSubmit={handleSubmit}
-              className="bg-background flex items-center space-x-2 p-4"
+              className="flex items-center space-x-2 bg-background p-4"
             >
               <Input
                 type="text"

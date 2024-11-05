@@ -1,18 +1,22 @@
 import { me } from "@/helper/auth";
+import { getRooms } from "@/helper/room";
+import { Room } from "@/types/room";
 import { User } from "@/types/user";
 import { createContext, ReactNode, useState, useEffect } from "react";
 
-interface UserContextType {
+interface AuthContext {
   user: User | null;
-  // setUser: React.Dispatch<React.SetStateAction<User | null>>;
   refreshAuth: () => Promise<void>;
   isAuthenticated: boolean;
+  rooms: Room[] | null;
+  refreshRooms: () => Promise<void>;
 }
 
-export const UserContext = createContext<UserContextType | null>(null);
+export const AuthContext = createContext<AuthContext | null>(null);
 
 export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [rooms, setRooms] = useState<Room[] | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -35,8 +39,26 @@ export function UserProvider({ children }: { children: ReactNode }) {
     await fetchUser();
   };
 
+  const fetchRooms = async () => {
+    try {
+      const response = await getRooms();
+      setRooms(response.data.data);
+    } catch (error) {
+      setRooms(null);
+      throw new Error(`message: ${error}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const refreshRooms = async () => {
+    setIsLoading(true);
+    await fetchUser();
+  };
+
   useEffect(() => {
     fetchUser();
+    fetchRooms();
   }, []);
 
   if (isLoading) {
@@ -44,8 +66,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <UserContext.Provider value={{ user, refreshAuth, isAuthenticated }}>
+    <AuthContext.Provider
+      value={{ user, refreshAuth, isAuthenticated, rooms, refreshRooms }}
+    >
       {children}
-    </UserContext.Provider>
+    </AuthContext.Provider>
   );
 }
