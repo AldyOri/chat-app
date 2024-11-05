@@ -23,8 +23,18 @@ func Init() {
 }
 
 func ConnectToRoom(c echo.Context) error {
-	userID := utils.GetUserID(c)
-	username := utils.GetUsername(c)
+	// userID := utils.GetUserID(c)
+	// username := utils.GetUsername(c)
+
+	token := c.QueryParam("token")
+	if token == "" {
+		return echo.NewHTTPError(http.StatusUnauthorized, "missing token")
+	}
+
+	userID, username, err := utils.VerifyToken(token)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusUnauthorized, "invalid token")
+	}
 
 	roomId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

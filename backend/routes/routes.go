@@ -22,9 +22,9 @@ func SetupRoutes(e *echo.Echo) {
 	roomsGroup.GET("/:id", controllers.GetRoomById)
 	roomsGroup.POST("/:id/join", controllers.JoinRoom)
 	roomsGroup.POST("/:id/leave", controllers.LeaveRoom)
-	
+
 	// roomsGroup.GET("/:id/messages", controllers.GetMessages)
 	// roomsGroup.POST("/:id/messages", controllers.SendMessages)
 
-	roomsGroup.GET("/:id/ws", websocket.ConnectToRoom)
+	apiGroup.GET("/rooms/:id/ws", websocket.ConnectToRoom)
 }

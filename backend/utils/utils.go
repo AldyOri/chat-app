@@ -3,6 +3,8 @@ package utils
 import (
 	"backend/config"
 	"backend/models"
+	"errors"
+	"os"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
@@ -34,4 +36,30 @@ func IsRoomExists(roomId uint) (bool, error) {
 		return false, err
 	}
 	return true, nil
+}
+
+func VerifyToken(tokenString string) (uint, string, error) {
+	jwtSecret := os.Getenv("JWT_SECRET")
+	if jwtSecret == "" {
+		return 0, "", errors.New("JWT secret not set")
+	}
+
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("unexpected signing method")
+		}
+		return []byte(jwtSecret), nil
+	})
+
+	if err != nil {
+		return 0, "", err
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		userID := uint(claims["user_id"].(float64))
+		username := claims["username"].(string)
+		return userID, username, nil
+	}
+
+	return 0, "", errors.New("invalid token")
 }
