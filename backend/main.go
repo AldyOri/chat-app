@@ -4,7 +4,9 @@ import (
 	"backend/config"
 	"backend/controllers/websocket"
 	"backend/routes"
+	"fmt"
 	"log"
+	"net"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
@@ -31,7 +33,25 @@ func main() {
 
 	websocket.Init()
 
+	printIPs()
+
 	routes.SetupRoutes(e)
 
 	e.Logger.Fatal(e.Start(":8000"))
+}
+
+func printIPs() {
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Current IP addresses:")
+	for _, addr := range addrs {
+		if ipNet, ok := addr.(*net.IPNet); ok && !ipNet.IP.IsLoopback() {
+			if ipNet.IP.To4() != nil {
+				fmt.Print(ipNet.IP.String())
+			}
+		}
+	}
 }

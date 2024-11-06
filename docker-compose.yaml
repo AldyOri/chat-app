@@ -3,14 +3,19 @@ services:
   postgres:
     image: postgres:17-alpine
     environment:
-      POSTGRES_USER:
-      POSTGRES_PASSWORD:
-      POSTGRES_DB:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: chat-app
     volumes:
-      - postgres_data:var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - custom_network
 
   backend:
     build: ./backend
+    networks:
+      custom_network:
+        ipv4_address: 172.23.0.4
     ports:
       - "8000:8000"
     depends_on:
@@ -18,10 +23,24 @@ services:
 
   frontend:
     build: ./frontend
+    environment:
+      VITE_API_URL: http://host.docker.internal:8000
+      VITE_WS_URL: ws://host.docker.internal:8000
+    networks:
+      custom_network:
+        ipv4_address: 172.23.0.5
     ports:
-      - "5173:5173"
+      - "3000:3000"
     depends_on:
       - backend
 
 volumes:
   postgres_data:
+
+networks:
+  custom_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.23.0.0/16
+          gateway: 172.23.0.1
