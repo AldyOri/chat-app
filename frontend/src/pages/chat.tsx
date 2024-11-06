@@ -60,8 +60,8 @@ export default function Chat() {
       (message) => setMessages((prevMessages) => [...prevMessages, message]), // onMessage handler
       () => {
         toast({
-          title:`Connected to room: ${activeRoom.name}`
-        })
+          title: `Connected to room: ${activeRoom.name}`,
+        });
         console.log("Connection opened");
       }, // onOpen handler
       () => console.log("Connection closed"), // onClose handler
@@ -153,12 +153,18 @@ export default function Chat() {
             >
               <Input
                 type="text"
+                disabled={!activeRoom}
                 placeholder="Type a message"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 className="flex-grow"
               />
-              <Button type="submit" size="icon" className="rounded-md">
+              <Button
+                disabled={!activeRoom}
+                type="submit"
+                size="icon"
+                className="rounded-md"
+              >
                 <Send className="h-5 w-5" />
                 <span className="sr-only">Send</span>
               </Button>

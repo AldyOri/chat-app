@@ -35,12 +35,10 @@ const data = {
   navMain: [
     {
       title: "My rooms",
-      url: "#",
       isActive: false,
     },
     {
-      title: "Search rooms",
-      url: "#",
+      title: "Public rooms",
       isActive: false,
     },
   ],
@@ -51,8 +49,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [activeItem, setActiveItem] = useState(data.navMain[0]);
   const [currentRooms, setCurrentRooms] = useState(user?.rooms);
   const { setOpen } = useSidebar();
-  console.log(user?.rooms)
-  console.log(rooms)
 
   return (
     <Sidebar
@@ -109,41 +105,41 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   </SidebarMenuItem>
                 ))} */}
                 <SidebarMenuItem>
-                    <SidebarMenuButton
-                      tooltip={{
-                        children: data.navMain[0].title,
-                        hidden: false,
-                      }}
-                      onClick={() => {
-                        setActiveItem(data.navMain[0]);
-                        setCurrentRooms(user?.rooms);
-                        setOpen(true);
-                      }}
-                      isActive={activeItem.title === data.navMain[0].title}
-                      className="px-2.5 md:px-2"
-                    >
-                      <Inbox />
-                      <span>{data.navMain[0].title}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton
-                      tooltip={{
-                        children: data.navMain[1].title,
-                        hidden: false,
-                      }}
-                      onClick={() => {
-                        setActiveItem(data.navMain[1]);
-                        setCurrentRooms(rooms);
-                        setOpen(true);
-                      }}
-                      isActive={activeItem.title === data.navMain[1].title}
-                      className="px-2.5 md:px-2"
-                    >
-                      <Search />
-                      <span>{data.navMain[1].title}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
+                  <SidebarMenuButton
+                    tooltip={{
+                      children: data.navMain[0].title,
+                      hidden: false,
+                    }}
+                    onClick={() => {
+                      setActiveItem(data.navMain[0]);
+                      setCurrentRooms(user?.rooms);
+                      setOpen(true);
+                    }}
+                    isActive={activeItem.title === data.navMain[0].title}
+                    className="px-2.5 md:px-2"
+                  >
+                    <Inbox />
+                    <span>{data.navMain[0].title}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    tooltip={{
+                      children: data.navMain[1].title,
+                      hidden: false,
+                    }}
+                    onClick={() => {
+                      setActiveItem(data.navMain[1]);
+                      setCurrentRooms(rooms);
+                      setOpen(true);
+                    }}
+                    isActive={activeItem.title === data.navMain[1].title}
+                    className="px-2.5 md:px-2"
+                  >
+                    <Search />
+                    <span>{data.navMain[1].title}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
@@ -166,7 +162,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               {activeItem.title}
             </div>
             <Label className="flex items-center gap-2 text-sm">
-              <span>Create room</span>
+              <span>Public room</span>
               <CreateRoom />
             </Label>
           </div>
@@ -200,12 +196,13 @@ type NavUserParams = {
 
 function NavUser({ name, email, avatar }: NavUserParams) {
   const navigate = useNavigate();
-  const { refreshAuth } = useAuth();
+  const { refreshAuth, refreshRooms } = useAuth();
   const { isMobile } = useSidebar();
 
   const handleLogout = async () => {
     logout();
     await refreshAuth();
+    await refreshRooms();
     navigate("/login");
   };
 
