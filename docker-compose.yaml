@@ -24,8 +24,8 @@ services:
   frontend:
     build: ./frontend
     environment:
-      VITE_API_URL: http://host.docker.internal:8000
-      VITE_WS_URL: ws://host.docker.internal:8000
+      - VITE_API_URL= ${VITE_API_URL}
+      - VITE_WS_URL= ${VITE_WS_URL}
     networks:
       custom_network:
         ipv4_address: 172.23.0.5
