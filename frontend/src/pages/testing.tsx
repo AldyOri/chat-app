@@ -16,9 +16,9 @@ function Testing() {
     }
     isMounted.current = true;
 
-    // WebSocket URL with token as a query parameter
     const token = getCookie({ name: "token" });
-    const wsUrl = `ws://localhost:8000/api/rooms/1/ws?token=${token}`;
+    const roomID = 1
+    const wsUrl = `ws://localhost:8000/api/rooms/${roomID}/ws?token=${token}`;
 
     // Initialize WebSocket connection
     socketRef.current = createWebSocketConnection(

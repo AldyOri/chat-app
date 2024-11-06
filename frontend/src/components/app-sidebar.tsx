@@ -1,11 +1,4 @@
-import * as React from "react";
-import {
-  ChevronsUpDown,
-  Command,
-  Inbox,
-  LogOut,
-  Search,
-} from "lucide-react";
+import { ChevronsUpDown, Command, Inbox, LogOut, Search } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -35,55 +28,31 @@ import { useAuth } from "@/hooks/use-user";
 import { logout } from "@/helper/auth";
 import { useNavigate } from "react-router-dom";
 import CreateRoom from "./sidebar/create-room";
+import RoomItem from "./sidebar/room-item";
+import { useState } from "react";
 
 const data = {
-  user: {
-    name: "ini user",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: "My rooms",
       url: "#",
-      icon: Inbox,
       isActive: false,
     },
     {
       title: "Search rooms",
       url: "#",
-      icon: Search,
       isActive: false,
-    },
-  ],
-  rooms: [
-    {
-      name: "William Smith",
-      email: "williamsmith@example.com",
-      subject: "Meeting Tomorrow",
-      date: "09:34 AM",
-      teaser:
-        "Hi team, just a reminder about our meeting tomorrow at 10 AM.\nPlease come prepared with your project updates.",
-    },
-    {
-      name: "Alice Smith",
-      email: "alicesmith@example.com",
-      subject: "Re: Project Update",
-      date: "Yesterday",
-      teaser:
-        "Thanks for the update. The progress looks great so far.\nLet's schedule a call to discuss the next steps.",
     },
   ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user } = useAuth();
-
-  // Note: I'm using state to show active item.
-  // IRL you should use the url/router.
-  const [activeItem, setActiveItem] = React.useState(data.navMain[0]);
-  const [rooms, setRooms] = React.useState(data.rooms);
+  const { user, rooms } = useAuth();
+  const [activeItem, setActiveItem] = useState(data.navMain[0]);
+  const [currentRooms, setCurrentRooms] = useState(user?.rooms);
   const { setOpen } = useSidebar();
+  console.log(user?.rooms)
+  console.log(rooms)
 
   return (
     <Sidebar
@@ -107,8 +76,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <Command className="size-4" />
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">Acme Inc</span>
-                    <span className="truncate text-xs">Enterprise</span>
+                    <span className="truncate font-semibold">Real time</span>
+                    <span className="truncate text-xs">chat app</span>
                   </div>
                 </a>
               </SidebarMenuButton>
@@ -119,7 +88,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroup>
             <SidebarGroupContent className="px-1.5 md:px-0">
               <SidebarMenu>
-                {data.navMain.map((item) => (
+                {/* {data.navMain.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
                       tooltip={{
@@ -128,13 +97,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       }}
                       onClick={() => {
                         setActiveItem(item);
-                        const room = data.rooms.sort(() => Math.random() - 0.5);
-                        setRooms(
-                          room.slice(
-                            0,
-                            Math.max(5, Math.floor(Math.random() * 10) + 1),
-                          ),
-                        );
+                        setCurrentRooms(rooms);
                         setOpen(true);
                       }}
                       isActive={activeItem.title === item.title}
@@ -144,7 +107,43 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       <span>{item.title}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                ))}
+                ))} */}
+                <SidebarMenuItem>
+                    <SidebarMenuButton
+                      tooltip={{
+                        children: data.navMain[0].title,
+                        hidden: false,
+                      }}
+                      onClick={() => {
+                        setActiveItem(data.navMain[0]);
+                        setCurrentRooms(user?.rooms);
+                        setOpen(true);
+                      }}
+                      isActive={activeItem.title === data.navMain[0].title}
+                      className="px-2.5 md:px-2"
+                    >
+                      <Inbox />
+                      <span>{data.navMain[0].title}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      tooltip={{
+                        children: data.navMain[1].title,
+                        hidden: false,
+                      }}
+                      onClick={() => {
+                        setActiveItem(data.navMain[1]);
+                        setCurrentRooms(rooms);
+                        setOpen(true);
+                      }}
+                      isActive={activeItem.title === data.navMain[1].title}
+                      className="px-2.5 md:px-2"
+                    >
+                      <Search />
+                      <span>{data.navMain[1].title}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
@@ -171,26 +170,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <CreateRoom />
             </Label>
           </div>
-          <SidebarInput placeholder="Type to search..." />
+          <SidebarInput disabled placeholder="Type to search..." />
         </SidebarHeader>
         <SidebarContent>
           <SidebarGroup className="px-0">
             <SidebarGroupContent>
-              {rooms.map((room) => (
-                <a
-                  href="#"
-                  key={room.email}
-                  className="flex flex-col items-start gap-2 whitespace-nowrap border-b p-4 text-sm leading-tight last:border-b-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                >
-                  <div className="flex w-full items-center gap-2">
-                    <span>{room.name}</span>{" "}
-                    <span className="ml-auto text-xs">{room.date}</span>
-                  </div>
-                  <span className="font-medium">{room.subject}</span>
-                  <span className="line-clamp-2 w-[260px] whitespace-break-spaces text-xs">
-                    {room.teaser}
-                  </span>
-                </a>
+              {currentRooms?.map((room) => (
+                <RoomItem
+                  key={room.id}
+                  id={room.id}
+                  name={room.name}
+                  created_at={room.created_at}
+                  users={room.users}
+                />
               ))}
             </SidebarGroupContent>
           </SidebarGroup>

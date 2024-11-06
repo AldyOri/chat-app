@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
-  const { refreshAuth } = useAuth();
+  const { refreshAuth, refreshRooms } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -24,12 +24,13 @@ function Login() {
       console.log(error);
     } finally {
       await refreshAuth();
+      await refreshRooms();
       navigate("/");
     }
   };
   return (
     <div className="flex flex-row">
-      <div className="bg-primary-foreground hidden h-screen w-1/2 md:block">
+      <div className="hidden h-screen w-1/2 bg-primary-foreground md:block">
         <div className="flex h-full items-end">
           <p className="p-9">
             &quot;Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -55,12 +56,14 @@ function Login() {
           <form onSubmit={handleSubmit} className="flex w-80 flex-col gap-y-3">
             <Input
               type="email"
+              required
               placeholder="example@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <Input
               type="password"
+              required
               placeholder="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

@@ -58,18 +58,21 @@ function Register() {
           <form onSubmit={handleSubmit} className="flex w-80 flex-col gap-y-3">
             <Input
               type="text"
+              required
               placeholder="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
             <Input
               type="email"
+              required
               placeholder="example@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <Input
               type="password"
+              required
               placeholder="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
@@ -90,6 +91,7 @@ func handleMessages(client *Client) {
 			SenderUsername: client.Username,
 			Content:        msg,
 			RoomID:         client.RoomID,
+			Timestamp:      time.Now(),
 		}
 
 		hub.Broadcast <- message

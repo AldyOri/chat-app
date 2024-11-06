@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"sync"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -13,6 +14,7 @@ type Message struct {
 	SenderID       uint
 	SenderUsername string
 	RoomID         uint
+	Timestamp      time.Time
 }
 
 type Hub struct {
@@ -67,11 +69,13 @@ func (h *Hub) Run() {
 				}
 
 				msgJSON, err := json.Marshal(struct {
-					Username string `json:"username"`
-					Content  string `json:"content"`
+					Username  string    `json:"username"`
+					Content   string    `json:"content"`
+					Timestamp time.Time `json:"timestamp"`
 				}{
-					Username: message.SenderUsername,
-					Content:  string(message.Content),
+					Username:  message.SenderUsername,
+					Content:   string(message.Content),
+					Timestamp: message.Timestamp,
 				})
 
 				if err != nil {

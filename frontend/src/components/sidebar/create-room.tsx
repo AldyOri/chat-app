@@ -29,7 +29,7 @@ function CreateRoom() {
         variant: "default",
       });
       setRoomName("");
-      refreshRooms();
+      await refreshRooms();
     } catch (error) {
       toast({
         title: "Failed to create room",

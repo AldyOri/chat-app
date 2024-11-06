@@ -10,6 +10,8 @@ interface AuthContext {
   isAuthenticated: boolean;
   rooms: Room[] | null;
   refreshRooms: () => Promise<void>;
+  activeRoom: Room | null;
+  setActiveRoom: React.Dispatch<React.SetStateAction<Room | null>>;
 }
 
 export const AuthContext = createContext<AuthContext | null>(null);
@@ -17,6 +19,7 @@ export const AuthContext = createContext<AuthContext | null>(null);
 export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [rooms, setRooms] = useState<Room[] | null>(null);
+  const [activeRoom, setActiveRoom] = useState<Room | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -67,7 +70,15 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, refreshAuth, isAuthenticated, rooms, refreshRooms }}
+      value={{
+        user,
+        refreshAuth,
+        isAuthenticated,
+        rooms,
+        refreshRooms,
+        activeRoom,
+        setActiveRoom,
+      }}
     >
       {children}
     </AuthContext.Provider>
