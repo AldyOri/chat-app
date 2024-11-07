@@ -8,15 +8,14 @@ import (
 	"log"
 	"net"
 
-	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading env file", err)
-	}
+	// if err := godotenv.Load(); err != nil {
+	// 	log.Fatal("Error loading env file", err)
+	// }
 
 	e := echo.New()
 	e.Use(echoMiddleware.LoggerWithConfig(echoMiddleware.LoggerConfig{
