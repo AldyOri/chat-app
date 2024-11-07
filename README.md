@@ -112,6 +112,14 @@ These instructions will help you set up and run the project locally using Docker
 - To access the backend from the frontend, make sure the `API_URL` and `WS_URL` in `.env` are configured with either `localhost` (for local use) or the IP address of the host machine.
 - If using a different machine, ensure that the ports `8000` and `3000` are open on the host firewall for network access.
 
+### Screenshoots
+![register page](assets/screenshoots/register.png)
+![login page](assets/screenshoots/login.png)
+![create room page](assets/screenshoots/create-room.png)
+![public rooms page](assets/screenshoots/public-rooms.png)
+![my rooms page](assets/screenshoots/my-rooms.png)
+![chat page](assets/screenshoots/chat.png)
+
 ### Acknowledgments
 
 - [Echo Framework](https://echo.labstack.com/)
@@ -120,11 +128,3 @@ These instructions will help you set up and run the project locally using Docker
 - [Tailwind CSS](https://tailwindcss.com/)
 - [shadcn/ui](https://ui.shadcn.com/)
 --- 
-
-### Screenshoots
-![register page](assets/screenshoots/register.png)
-![login page](assets/screenshoots/login.png)
-![create room page](assets/screenshoots/create-room.png)
-![public rooms page](assets/screenshoots/public-rooms.png)
-![my rooms page](assets/screenshoots/my-rooms.png)
-![chat page](assets/screenshoots/chat.png)
