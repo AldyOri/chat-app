@@ -86,8 +86,8 @@ These instructions will help you set up and run the project locally using Docker
 
 4. **Access the Application**
 
-   - **Frontend**: On the machine running Docker, open a browser and go to [http://localhost:3000](http://localhost:3000). On another device, use [http://<host-IP>:3000](http://192.168.1.100:3000) (replace `<host-IP>` with your machine's IP).
-   - **Backend API**: Available at [http://localhost:8000](http://localhost:8000) locally or [http://<host-IP>:8000](http://192.168.1.100:8000) from another device.
+   - **Frontend**: On the machine running Docker, open a browser and go to [http://localhost:3000](http://localhost:3000). On another device, use `http://<host-IP>:3000` (replace `<host-IP>` with your machine's IP).
+   - **Backend API**: Available at [http://localhost:8000](http://localhost:8000) locally or `http://<host-IP>:8000` from another device.
 
 ### Directory Structure
 
